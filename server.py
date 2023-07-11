@@ -34,8 +34,33 @@ def get_patient(id):
 # https://server.fire.ly/DocumentReference?patient={12892}
 
 
-@app.route('/patient', methods=['POST'])
+@app.route('/Patient', methods=['POST'])
+def create_patient():
+    url = f"{fhir_api_base}/Patient"
+    patient_data = request.json
 
+    try:
+        patient = Patient.parse_obj(patient_data)
+    except Exception as e:
+        return {"error": f"Invalid patient data. {str(e)}"}, 400
+
+    # Send POST request to the FHIR server
+    response = requests.post(url, json=patient.dict())
+
+    if response.status_code == 201:
+        # If the response is successful, return the id of the new patient
+        location_header = response.headers.get('Location')
+
+        if location_header is not None:
+            new_patient_id = location_header.rsplit('/', 1)[-1]
+            return jsonify({"id": new_patient_id})
+
+        else:
+            return {"error": "Failed to get the new patient's id"}, 500
+
+    else:
+        # If the response is not successful, return the error
+        return {"error": "An error occurred when creating the patient"}, response.status_code
 
 
 @app.route('/Patient/<id>/Documents', methods=['GET'])
@@ -65,6 +90,8 @@ def get_patient_documents(id):
     else:
         # If the response is not successful, return the error
         return {"error": "An error occurred when retrieving documents"}, response.status_code
+
+
 
 
 if __name__ == '__main__':
