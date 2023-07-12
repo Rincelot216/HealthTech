@@ -1,0 +1,15 @@
+<!-- templates/observation_form.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Enter Glucose Level</title>
+</head>
+<body>
+    <h1>Enter Glucose Level</h1>
+    <form action="/create_observation" method="post">
+        Patient ID: <input type="text" name="patient_id"><br>
+        Glucose Level: <input type="text" name="value"><br>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
