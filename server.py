@@ -1,5 +1,5 @@
 import requests
-from flask import Flask, Response, jsonify, request, render_template
+from flask import Flask, Response, jsonify, request, render_template, redirect, url_for
 from config import fhir_api_base
 
 import decimal
@@ -36,7 +36,8 @@ def custom_dict(o):
 
 @app.route('/', methods=['GET'])
 def home():
-    return "Hello, World!"
+    return redirect(url_for('observation_form'))
+
 
 
 @app.route('/Patient/<id>', methods=['GET'])
